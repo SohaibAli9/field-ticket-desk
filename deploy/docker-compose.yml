@@ -1,0 +1,30 @@
+# Run the web app with its own Postgres. Data (well list, tickets, readings cache) in ../data; keys in ../.env.
+# Build first: docker build -t field-ticket-desk:local ..
+name: fieldtickets
+services:
+  app:
+    image: field-ticket-desk:local
+    restart: unless-stopped
+    ports: ["127.0.0.1:8220:8220"]
+    env_file: [../.env]
+    volumes: ["../data:/data"]
+    depends_on:
+      db: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8220/healthz', timeout=3).read(1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment: { POSTGRES_PASSWORD: demo, POSTGRES_DB: tickets }
+    volumes: ["pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tickets"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  pg:

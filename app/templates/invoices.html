@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block body %}<h1>Invoices</h1>
+{% for i in rows %}<div class="card" style="margin-bottom:14px"><h2>{{ i.qbo_payload.CustomerRef.name }} &middot; {{ i.doc_number }} <span class="pill p-draft">QuickBooks: ready to send</span></h2>
+<div><table><tr><th>Date</th><th>Line</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Amount</th></tr>
+{% for l in i.qbo_payload.Line %}<tr><td>{{ l.SalesItemLineDetail.ServiceDate }}</td><td>{{ l.Description }}</td><td class="num">{{ l.SalesItemLineDetail.Qty }}</td><td class="num">{{ '%.2f'|format(l.SalesItemLineDetail.UnitPrice) }}</td><td class="num">{{ '{:,.2f}'.format(l.Amount) }}</td></tr>{% endfor %}
+<tr><td colspan="4" class="num"><b>Total</b></td><td class="num"><b>${{ '{:,.2f}'.format(i.total|float) }}</b></td></tr></table></div>
+<div class="mut" style="margin-top:10px">QuickBooks Online request body for POST /v3/company/&lt;realm&gt;/invoice</div><pre style="max-height:190px">{{ i.qbo_payload|tojson(indent=1) }}</pre></div>{% endfor %}{% endblock %}

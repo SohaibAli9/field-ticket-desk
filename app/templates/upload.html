@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}<h1>Add a ticket</h1>
+<div class="card" style="max-width:620px"><form method="post" action="/upload" enctype="multipart/form-data">
+<p>Take a photo of a ticket or pick a scan. Both readings and the checks run as soon as it is in.</p>
+{% if error %}<div class="banner held">{{ error }}</div>{% endif %}
+<input type="file" name="photo" accept="image/*" capture="environment" style="margin:10px 0"><br>
+<button class="btn primary">Upload ticket</button></form>
+<p class="mut" style="margin-top:14px">Sample tickets to try (download, then upload):
+{% for s in samples %}<a href="/samples/{{ s }}">{{ s }}</a>{{ ', ' if not loop.last }}{% endfor %}.
+IMG_4310.jpg is ticket 10412, the one with three real wells.</p></div>{% endblock %}

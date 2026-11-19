@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block body %}<h1>All tickets</h1>
+<div class="card"><table><tr><th>Ticket</th><th>Date</th><th>Customer</th><th>Well</th><th>Truck</th><th class="num">Bbl</th><th class="num">Total</th><th>Dispatch</th><th>State</th></tr>
+{% for t in rows %}<tr><td><a href="/tickets/{{ t.id }}">{{ t.ticket_no }}</a><div class="mut">{{ t.source }}</div></td><td>{{ t.values.date }}</td><td>{{ t.customer }}</td><td>{{ t.values.lease_well }}</td><td>{{ t.values.truck }}</td><td class="num">{{ t.values.bbls }}</td><td class="num">{{ t.values.total }}</td><td>{{ t.load_id or '' }}</td>
+<td><span class="pill p-{{ t.state }}">{{ t.state }}</span>{% if t.duplicate_of %}<div class="mut">same ticket as {{ t.duplicate_of }}</div>{% endif %}</td></tr>{% endfor %}</table></div>{% endblock %}

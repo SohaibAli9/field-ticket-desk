@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<h1>Ticket {{ t.ticket_no }} <span class="pill p-{{ t.state }}">{{ t.state }}</span></h1>
+{% if t.state == 'held' %}<div class="banner held">Held from invoicing: {{ t.issues|length }} problem{{ 's' if t.issues|length > 1 }} below.</div>
+{% elif t.state == 'ready' %}<div class="banner ready">Checked against dispatch, the disposal well's receipt, the rate sheet and the state well registry. Ready to invoice.</div>
+{% elif t.state == 'review' %}<div class="banner review">The two readings could not settle {{ t.field_status.values()|selectattr('state','equalto','review')|list|length }} field(s). Pick what the ticket says.</div>
+{% elif t.state == 'duplicate' %}<div class="banner held">Same ticket number as {{ t.duplicate_of }}. Not invoiced twice.</div>{% endif %}
+<div class="ticket"><div><img src="/img/{{ t.image }}"><p class="mut">{{ t.image }} &middot; {{ t.source }} &middot; dispatch load {{ t.load_id or 'not matched' }}</p>
+{% if t.issues %}<div class="card"><h2>Problems</h2>{% for i in t.issues %}<div class="issue">{{ i.message }}</div>{% if i.suggestion %}<div class="fix">Fix: {{ i.suggestion }}</div>{% endif %}{% endfor %}</div>{% endif %}
+{% if log %}<div class="card" style="margin-top:12px"><h2>Review history</h2>{% for l in log %}<div class="mut">{{ l.at.strftime('%d %b %H:%M') }} &middot; {{ l.reviewer }} set {{ labels[l.field] }} to <b>{{ l.chosen }}</b> (readings: {{ l.reading_a }} / {{ l.reading_b }})</div>{% endfor %}</div>{% endif %}</div>
+<div class="card" style="padding:6px">{% for f in order %}{% set s = t.field_status[f] %}
+<div class="f {{ s.state }}"><div class="lab">{{ labels[f] }}</div><div><b>{{ t['values'][f] if t['values'][f] not in (True, False) else ('yes' if t['values'][f] else 'NO') }}</b>
+<div class="how">{{ s.how }}</div>
+{% if s.state == 'review' %}<form method="post" action="/tickets/{{ t.id }}/resolve" class="choices"><input type="hidden" name="field" value="{{ f }}">
+{% for v in [s.a, s.b]|unique %}<button name="value" value="{{ v }}">{{ v }}</button>{% endfor %}
+{% if f == 'truck' %}{% for v in ['T-07','T-12','T-14','T-21','T-33','T-41'] if v not in [s.a, s.b] %}<button name="value" value="{{ v }}" class="mut">{{ v }}</button>{% endfor %}{% endif %}
+{% if f == 'trailer' %}{% for v in ['TR-112','TR-114','TR-121','TR-133','TR-141','VAC-07'] if v not in [s.a, s.b] %}<button name="value" value="{{ v }}" class="mut">{{ v }}</button>{% endfor %}{% endif %}</form>
+{% if f == 'api' %}{% for h in hints %}<div class="hint {{ 'good' if h.who.startswith('Registry') else 'bad' }}"><b>{{ h.who }}: {{ h.value }}</b>
+{% if h.well %} is {{ h.well.name }}, {{ h.well.operator }}, {{ h.well.type|lower }} well, {{ h.well.status|lower }}{% else %} is not in the registry{% endif %}</div>{% endfor %}{% endif %}
+{% endif %}</div></div>{% endfor %}</div></div>{% endblock %}

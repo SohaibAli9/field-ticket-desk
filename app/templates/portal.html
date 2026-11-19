@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block body %}<h1>{{ customer }}: your tickets and invoices</h1>
+<p class="mut">What the operator sees: every load hauled for them, the signed ticket photo, and the invoice it went on.</p>
+<div class="grid two"><div class="card"><table><tr><th>Ticket</th><th>Date</th><th>Well</th><th class="num">Bbl</th><th class="num">Amount</th><th>Status</th></tr>
+{% for t in rows %}<tr><td><a href="/img/{{ t.image }}">{{ t.ticket_no }}</a></td><td>{{ t['values'].date }}</td><td>{{ t['values'].lease_well }}<div class="mut">{{ t['values'].api }}</div></td><td class="num">{{ t['values'].bbls }}</td><td class="num">{{ t['values'].total }}</td>
+<td>{% if t.state == 'ready' %}<span class="pill p-ready">invoiced</span>{% else %}<span class="pill p-review">being checked</span>{% endif %}</td></tr>{% endfor %}</table></div>
+<div class="card">{% for i in invoices %}<h2>Invoice {{ i.doc_number }}</h2><p>Total <b>${{ '{:,.2f}'.format(i.total|float) }}</b>, due {{ i.qbo_payload.DueDate }}</p>{% endfor %}
+<p class="mut">Ticket photos open from each row. Disputes are raised against a ticket, not the whole invoice.</p></div></div>{% endblock %}

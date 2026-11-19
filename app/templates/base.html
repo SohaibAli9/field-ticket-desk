@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>{% block title %}Field ticket desk{% endblock %}</title><link rel="stylesheet" href="/static/style.css"></head><body>
+<header><div class="brand">Field Ticket Desk<small>{{ hauler.name }}</small></div>
+<nav>{% set p = request.url.path %}
+<a href="/" class="{{ 'on' if p == '/' }}">Dashboard</a>
+<a href="/review" class="{{ 'on' if p.startswith('/review') }}">Review queue{% if queue_count %} <span class="pill p-review">{{ queue_count }}</span>{% endif %}</a>
+<a href="/tickets" class="{{ 'on' if p.startswith('/tickets') }}">Tickets</a>
+<a href="/invoices" class="{{ 'on' if p.startswith('/invoices') }}">Invoices</a>
+<a href="/portal/EQV Operating" class="{{ 'on' if p.startswith('/portal') }}">Customer portal</a>
+<a href="/upload" class="{{ 'on' if p.startswith('/upload') }}">Upload</a></nav></header>
+<div style="background:#fff6e5;color:#7a4b00;padding:7px 22px;font-size:13px;border-bottom:1px solid #f0dcb0">
+Demo. The hauler, drivers, rates and tickets are invented; the wells and API numbers are real (NM OCD).
+It resets every two hours. <form method="post" action="/reset" style="display:inline"><button class="btn" style="padding:1px 8px;font-size:12px">Reset now</button></form></div>
+<main>{% block body %}{% endblock %}
+<p class="note">Demo data: the hauler, drivers, trucks, rates and tickets are invented. Wells, API numbers, operators and disposal wells are real, from the New Mexico OCD well registry.</p></main></body></html>

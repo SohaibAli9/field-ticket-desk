@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<h1>Week of 2 Nov 2026</h1>
+<div class="grid k4">
+<div class="card kpi"><div class="n">{{ counts.values()|sum }}</div><div class="l">ticket photos in ({{ counts.get('duplicate',0) }} duplicate)</div></div>
+<div class="card kpi"><div class="n">{{ by_code }} / {{ n_fields }}</div><div class="l">fields settled by the two readings and the checks</div></div>
+<div class="card kpi"><div class="n">{{ counts.get('review',0) }}</div><div class="l">tickets waiting on a person</div></div>
+<div class="card kpi"><div class="n" style="color:var(--red)">{{ counts.get('held',0) }}</div><div class="l">held: a problem to fix before billing</div></div>
+<div class="card kpi"><div class="n" style="color:var(--green)">${{ '{:,.2f}'.format(invoices|sum(attribute='total')|float) }}</div><div class="l">ready to invoice ({{ counts.get('ready',0) }} tickets)</div></div>
+</div>
+<div class="grid two" style="margin-top:14px">
+<div class="card"><h2>Held tickets</h2><table><tr><th>Ticket</th><th>Customer</th><th>Why it is held</th></tr>
+{% for t in held %}<tr><td><a href="/tickets/{{ t.id }}">{{ t.ticket_no }}</a></td><td>{{ t.customer }}</td><td>
+{% for i in t.issues %}<div class="issue">{{ i.message }}</div>{% if i.suggestion %}<div class="fix">Fix: {{ i.suggestion }}</div>{% endif %}{% endfor %}</td></tr>{% endfor %}</table></div>
+<div class="grid" style="align-content:start">
+<div class="card"><h2>Dispatched, hauled, no ticket</h2><table><tr><th>Load</th><th>Date</th><th>Well</th><th>Truck</th><th class="num">At risk</th></tr>
+{% for l in lost %}<tr><td>{{ l.load_id }}</td><td>{{ l.date }}</td><td>{{ l.lease_well }}<div class="mut">{{ l.customer }} &middot; SWD receipt {{ l.swd_ticket }}, {{ l.bbls|int }} bbl</div></td><td>{{ l.truck }}</td><td class="num">${{ '{:,.2f}'.format(l.value_at_risk|float) }}</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Invoices ready</h2><table>{% for i in invoices %}<tr><td>{{ i.customer }}</td><td class="num">${{ '{:,.2f}'.format(i.total|float) }}</td></tr>{% endfor %}</table>
+<p class="mut" style="margin:8px 0 0">Reading cost this week: ${{ '%.2f'|format(cost.s|float) }} for {{ cost.n }} photos, two readings each.</p></div>
+</div></div>{% endblock %}

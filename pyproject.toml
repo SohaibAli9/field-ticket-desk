@@ -1,0 +1,23 @@
+[project]
+name = "field-ticket-desk"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=2.11.0",
+    "fastapi>=0.165.0",
+    "google-genai>=3.6.1",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "markdown>=3.11.3",
+    "numpy>=2.5.5",
+    "pillow>=13.0.0",
+    "playwright>=1.65.2",
+    "psycopg[binary]>=3.3.9",
+    "pydantic>=2.14.4",
+    "pymupdf>=2.1",
+    "pytest>=9.2.0",
+    "python-multipart>=0.0.34",
+    "pyyaml>=6.0.3",
+    "rapidfuzz>=3.14.6",
+    "uvicorn>=0.54.0",
+]

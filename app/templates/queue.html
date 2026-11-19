@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}<h1>Review queue</h1>
+<div class="card"><table><tr><th>Ticket</th><th>Photo</th><th>Field</th><th>Reader A</th><th>Reader B</th><th>Why</th></tr>
+{% for t in rows %}{% for f, s in t.field_status.items() if s.state == 'review' %}
+<tr><td><a href="/tickets/{{ t.id }}">{{ t.ticket_no }}</a></td><td class="mut">{{ t.image }}</td><td>{{ labels[f] }}</td><td>{{ s.a }}</td><td>{{ s.b }}</td><td class="mut">{{ s.how }}</td></tr>
+{% endfor %}{% endfor %}</table>{% if not rows %}<p class="mut">Nothing waiting.</p>{% endif %}</div>{% endblock %}
